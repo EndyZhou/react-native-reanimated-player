@@ -2,9 +2,11 @@ import React from 'react';
 import type { StyleProp } from 'react-native';
 import type { ViewProps } from 'react-native';
 import type { ViewStyle } from 'react-native';
-import { normalize } from '../../../src/utils';
+// import { normalize } from '../../../src/utils';
 import type { IconNames } from './iconfont';
 import IconFont from './iconfont';
+
+export const normalize = (size: number) => size;
 
 export type IconProps = {
   name: IconNames;

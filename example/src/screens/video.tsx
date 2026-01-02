@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -6,7 +7,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { useTheme } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import {
   Image,
   ImageStyle,
@@ -20,10 +21,10 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { clamp } from 'react-native-awesome-slider/src/utils';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import InkWell from 'react-native-inkwell';
 import Animated, {
+  clamp,
   interpolate,
   runOnJS,
   useAnimatedProps,
@@ -46,6 +47,7 @@ import { setPlayerPaused, setPlayerPoint } from '../state/reducer';
 import { palette } from '../theme/palette';
 import { height, isIos, width } from '../utils';
 import { mb, mr, mt, px2dp } from '../utils/ui-tools';
+import { SharedValue } from 'react-native-reanimated';
 
 const AnimatedLottieView = Animated.createAnimatedComponent(LottieView);
 
@@ -55,7 +57,7 @@ const flexRow: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
 };
-const StatusBarHeight = isIos ? 0 : StatusBar?.currentHeight ?? 0 + 5;
+const StatusBarHeight = isIos ? 0 : (StatusBar?.currentHeight ?? 0 + 5);
 const Avatar = ({
   size,
   style,
@@ -86,7 +88,7 @@ const options: { icon: IconNames; title: string }[] = [
 export const VideoScreen = ({
   videoTranslateY,
 }: {
-  videoTranslateY: Animated.SharedValue<number>;
+  videoTranslateY: SharedValue<number>;
 }) => {
   const insets = useSafeAreaInsets();
   const insetsRefs = useRef(insets);
@@ -373,11 +375,11 @@ export const VideoScreen = ({
    * Toggle player full screen state on <Video> component
    */
   const enterFullScreen = () => {
-    videoPlayerRef.current?.toggleFullSreen(true);
+    videoPlayerRef.current?.toggleFullScreen(true);
   };
 
   const exitFullScreen = () => {
-    videoPlayerRef.current?.toggleFullSreen(false);
+    videoPlayerRef.current?.toggleFullScreen(false);
   };
   const panGesture = Gesture.Pan()
     .onStart(({ velocityY, velocityX }) => {
@@ -550,6 +552,7 @@ export const VideoScreen = ({
                 isTapPaused.current = state;
               }}
               onTapMore={() => {
+                'use worklet';
                 optionsModalRef.current?.present();
               }}
               onToggleAutoPlay={(state: boolean) => {

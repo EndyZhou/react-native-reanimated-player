@@ -20,20 +20,21 @@ import {
   AwesomeSliderProps,
   Slider,
   SliderThemeType,
-} from 'react-native-awesome-slider/src/index';
-import { clamp } from 'react-native-awesome-slider/src/utils';
+} from 'react-native-awesome-slider';
 import type { PanGesture } from 'react-native-gesture-handler';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Orientation, { OrientationType } from 'react-native-orientation-locker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import Animated, {
   cancelAnimation,
-  runOnJS,
+  SharedValue,
   useAnimatedProps,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withDelay,
   withTiming,
+  AnimatedStyle,
+  clamp,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Video, {
@@ -43,18 +44,19 @@ import Video, {
   VideoProperties,
 } from 'react-native-video';
 import { Text } from './components';
-import { Ripple } from './components/ripple';
-import { TapControler } from './tap-controler';
+// import { Ripple } from './components/ripple';
+import { TapController } from './tap-controller';
 import { palette } from './theme/palette';
 import { bin, isIos, useRefs } from './utils';
 import { VideoLoader } from './video-loading';
 import { formatTime, formatTimeToMins, secondToTime } from './video-utils';
+import { scheduleOnRN } from 'react-native-worklets';
 export const { width, height, scale, fontScale } = Dimensions.get('window');
 
 const VIDEO_DEFAULT_HEIGHT = width * (9 / 16);
 const hitSlop = { left: 8, bottom: 8, right: 8, top: 8 };
 
-const controlAnimteConfig = {
+const controlAnimateConfig = {
   duration: 200,
 };
 
@@ -81,11 +83,11 @@ export type VideoProps = VideoProperties & {
     AwesomeSliderProps,
     'progress' | 'minimumValue' | 'maximumValue'
   >;
-  videoHeight: Animated.SharedValue<number>;
-  customAnimationStyle?: Animated.AnimateStyle<ViewStyle>;
-  controlViewOpacityValue?: Animated.SharedValue<number>;
+  videoHeight: SharedValue<number>;
+  customAnimationStyle?: AnimatedStyle<ViewStyle>;
+  controlViewOpacityValue?: SharedValue<number>;
   onCustomPanGesture?: PanGesture;
-  isFullScreen: Animated.SharedValue<boolean>;
+  isFullScreen: SharedValue<boolean>;
   disableControl?: boolean;
   renderBackIcon?: () => JSX.Element;
   renderFullScreenBackIcon?: () => JSX.Element;
@@ -111,7 +113,7 @@ export type VideoPlayerRef = {
   /**
    * toggle full screen
    */
-  toggleFullSreen: (isFullScreen: boolean) => void;
+  toggleFullScreen: (isFullScreen: boolean) => void;
   /**
    * toggle control opatity
    */
@@ -204,8 +206,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
         checkTapTakesEffect();
         pause();
       },
-      toggleFullSreen: (isFullScrren: boolean) => {
-        isFullScrren ? enterFullScreen() : exitFullScreen();
+      toggleFullScreen: (isFullScreen: boolean) => {
+        isFullScreen ? enterFullScreen() : exitFullScreen();
       },
       toggleControlViewOpacity: (isShow: boolean) => {
         'worklet';
@@ -345,7 +347,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
      */
     useEffect(() => {
       mounted.current = true;
-      Orientation.lockToPortrait();
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
       StatusBar.setBarStyle('light-content');
       paused ? pause() : play();
       const unBeforeRemove = navigation?.addListener(
@@ -363,7 +365,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
         mounted.current = false;
         clearControlTimeout();
         pause();
-        Orientation.lockToPortrait();
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
         unBeforeRemove && unBeforeRemove();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -401,7 +403,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
      */
     const showControlAnimation = () => {
       'worklet';
-      controlViewOpacity.value = withTiming(1, controlAnimteConfig);
+      controlViewOpacity.value = withTiming(1, controlAnimateConfig);
       setControlTimeout();
     };
     /**
@@ -410,7 +412,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
      */
     const hideControlAnimation = () => {
       'worklet';
-      controlViewOpacity.value = withTiming(0, controlAnimteConfig);
+      controlViewOpacity.value = withTiming(0, controlAnimateConfig);
     };
     /**
      * check on tap icon
@@ -436,33 +438,42 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
     /**
      * Toggle player full screen state on <Video> component
      */
-    const enterFullScreen = () => {
+    const enterFullScreen = async () => {
       onEnterFullscreen?.();
       setIsFullscreen(true);
       StatusBar.setHidden(true, 'fade');
-      Orientation.lockToLandscape();
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.LANDSCAPE,
+      );
       isFullScreen.value = true;
       videoHeight.value = width;
     };
 
-    const exitFullScreen = () => {
+    const exitFullScreen = async () => {
       onExitFullscreen?.();
       setIsFullscreen(false);
       StatusBar.setHidden(false, 'fade');
-      Orientation.lockToPortrait();
+
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP,
+      ).catch(error => console.log('Error locking orientation:', error));
       isFullScreen.value = false;
       videoHeight.value = videoDefaultHeight;
     };
-    const toggleFullScreenOnJS = () => {
-      Orientation.getOrientation(orientation => {
-        if (isFullScreen.value || orientation !== OrientationType.PORTRAIT) {
-          exitFullScreen();
-          StatusBar.setHidden(false, 'fade');
-        } else {
-          enterFullScreen();
-          StatusBar.setHidden(true, 'fade');
-        }
-      });
+
+    const toggleFullScreenOnJS = async () => {
+      const orientation = await ScreenOrientation.getOrientationAsync();
+      if (
+        isFullScreen.value ||
+        ![
+          ScreenOrientation.Orientation.PORTRAIT_DOWN,
+          ScreenOrientation.Orientation.PORTRAIT_UP,
+        ].includes(orientation)
+      ) {
+        exitFullScreen();
+      } else {
+        enterFullScreen();
+      }
     };
     const toggleFullScreen = () => {
       'worklet';
@@ -471,7 +482,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
         return;
       }
 
-      runOnJS(toggleFullScreenOnJS)();
+      scheduleOnRN(toggleFullScreenOnJS);
     };
 
     /**
@@ -504,11 +515,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
         }
         if (isFullScreen.value) {
           if (translationY >= 100) {
-            runOnJS(exitFullScreen)();
+            scheduleOnRN(exitFullScreen);
           }
         } else {
           if (-translationY >= 40) {
-            runOnJS(enterFullScreen)();
+            scheduleOnRN(enterFullScreen);
           }
         }
         videoTransY.value = 0;
@@ -525,10 +536,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
       }
       if (success) {
         if (controlViewOpacity.value === 0) {
-          controlViewOpacity.value = withTiming(1, controlAnimteConfig);
-          setControlTimeout();
+          controlViewOpacity.value = withTiming(1, controlAnimateConfig, () => {
+            resetControlTimeout();
+          });
         } else {
-          controlViewOpacity.value = withTiming(0, controlAnimteConfig);
+          controlViewOpacity.value = withTiming(0, controlAnimateConfig);
         }
       }
     });
@@ -548,7 +560,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
           if (x < leftDoubleTapBoundary) {
             doubleLeftOpacity.value = 1;
             // rippleLeft.current?.onPress({ x, y });
-            runOnJS(seekByStep)(true);
+            scheduleOnRN(seekByStep, true);
             return;
           }
           if (x > rightDoubleTapBoundary) {
@@ -557,7 +569,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
             //   x: x - rightDoubleTapBoundary,
             //   y,
             // });
-            runOnJS(seekByStep)(false);
+            scheduleOnRN(seekByStep, false);
 
             return;
           }
@@ -581,22 +593,26 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
       if (!status) {
         return;
       }
-      runOnJS(togglePlayOnJS)();
+      scheduleOnRN(togglePlayOnJS);
     };
     /**
      * on tap back
      * @returns
      */
-    const onBackTapHandlerOnJS = () => {
-      Orientation.getOrientation(orientation => {
-        if (isFullScreen.value || orientation !== OrientationType.PORTRAIT) {
-          setIsFullscreen(false);
-          exitFullScreen();
-          StatusBar.setHidden(false, 'fade');
-        } else {
-          onTapBack?.();
-        }
-      });
+    const onBackTapHandlerOnJS = async () => {
+      const orientation = await ScreenOrientation.getOrientationAsync();
+      if (
+        isFullScreen.value ||
+        ![
+          ScreenOrientation.Orientation.PORTRAIT_DOWN,
+          ScreenOrientation.Orientation.PORTRAIT_UP,
+        ].includes(orientation)
+      ) {
+        setIsFullscreen(false);
+        exitFullScreen();
+      } else {
+        onTapBack?.();
+      }
     };
 
     /**
@@ -620,7 +636,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
       if (!status) {
         return;
       }
-      runOnJS(toggleTimerOnJS)();
+      scheduleOnRN(toggleTimerOnJS);
     };
 
     const onTapSlider = () => {
@@ -747,11 +763,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
       autoPlayAnimation.value = autoPlayAnimation.value === 0 ? 0.5 : 0;
       autoPlayTextAnimation.value = withTiming(1);
       autoPlayTextAnimation.value = withDelay(3000, withTiming(0));
-      runOnJS(toggleAutoPlayOnJS)();
+      scheduleOnRN(toggleAutoPlayOnJS);
     };
     const _renderMore = useCallback(
       () => (
-        <TapControler onPress={onMoreTapHandler}>
+        <TapController onPress={onMoreTapHandler}>
           {renderMore ? (
             renderMore()
           ) : (
@@ -760,7 +776,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
               style={styles.more}
             />
           )}
-        </TapControler>
+        </TapController>
       ),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [renderMore],
@@ -771,12 +787,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
       if (!status) {
         return;
       }
-      runOnJS(onBackTapHandlerOnJS)();
+      scheduleOnRN(onBackTapHandlerOnJS);
     };
 
     const _renderBack = useCallback(
       () => (
-        <TapControler onPress={onBackTapHandler}>
+        <TapController onPress={onBackTapHandler}>
           {renderBackIcon ? (
             renderBackIcon()
           ) : (
@@ -785,14 +801,14 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
               style={styles.back}
             />
           )}
-        </TapControler>
+        </TapController>
       ),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [renderBackIcon],
     );
     const _renderFullScreenBack = useCallback(
       () => (
-        <TapControler onPress={onBackTapHandler}>
+        <TapController onPress={onBackTapHandler}>
           {renderFullScreenBackIcon ? (
             renderFullScreenBackIcon()
           ) : (
@@ -801,9 +817,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
               style={styles.back}
             />
           )}
-        </TapControler>
+        </TapController>
       ),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       [renderBackIcon],
     );
     const onMoreTapHandler = () => {
@@ -813,7 +828,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
         return;
       }
       if (onTapMore) {
-        runOnJS(onTapMore)();
+        scheduleOnRN(onTapMore);
       }
     };
 
@@ -837,7 +852,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
           backgroundColor={'#000'}
         />
         <GestureDetector gesture={gesture}>
-          <Animated.View style={[styles.container, videoStyle, style]}>
+          <Animated.View
+            pointerEvents="box-none"
+            style={[styles.container, videoStyle, style]}>
             {renderVideoComponent?.()}
             {Boolean(children) && children}
             <VideoLoader loading={loading} />
@@ -868,14 +885,15 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
                     )}
 
                     {Boolean(onToggleAutoPlay) && (
-                      <TapControler
+                      <TapController
                         onPress={toggleAutoPlay}
                         style={controlStyle.autoPlay}>
                         <AnimatedLottieView
+                          style={controlStyle.autoPlay}
                           animatedProps={autoPlayAnimatedProps}
                           source={require('./assets/lottie-auto-play.json')}
                         />
-                      </TapControler>
+                      </TapController>
                     )}
                     {Boolean(onTapMore) && _renderMore()}
                   </View>
@@ -914,27 +932,29 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
                       </Animated.View>
                     )}
                     {Boolean(onToggleAutoPlay) && (
-                      <TapControler
+                      <TapController
                         onPress={toggleAutoPlay}
                         style={controlStyle.autoPlay}>
                         <AnimatedLottieView
+                          style={controlStyle.autoPlay}
                           animatedProps={autoPlayAnimatedProps}
                           source={require('./assets/lottie-auto-play.json')}
                         />
-                      </TapControler>
+                      </TapController>
                     )}
                     {Boolean(onTapMore) && _renderMore()}
                   </View>
                 </Animated.View>
                 <View style={controlStyle.pauseView}>
-                  <TapControler
+                  <TapController
                     onPress={onPauseTapHandler}
                     style={controlStyle.pause}>
                     <AnimatedLottieView
+                      style={controlStyle.pause}
                       animatedProps={playAnimatedProps}
                       source={require('./assets/lottie-play.json')}
                     />
-                  </TapControler>
+                  </TapController>
                 </View>
                 <Animated.View
                   style={[
@@ -944,7 +964,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
                   ]}>
                   <View
                     style={[controlStyle.bottomControlGroup, controlStyle.row]}>
-                    <TapControler onPress={toggleTimer}>
+                    <TapController onPress={toggleTimer}>
                       <Text style={controlStyle.timerText}>
                         <Text
                           style={controlStyle.timerText}
@@ -959,19 +979,20 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
                           t3
                         />
                       </Text>
-                    </TapControler>
-                    <TapControler
+                    </TapController>
+                    <TapController
                       onPress={toggleFullScreen}
                       style={controlStyle.fullToggle}>
                       {renderFullScreen ? (
                         renderFullScreen()
                       ) : (
                         <AnimatedLottieView
+                          style={controlStyle.fullToggle}
                           animatedProps={fullscreenAnimatedProps}
                           source={require('./assets/lottie-fullscreen.json')}
                         />
                       )}
-                    </TapControler>
+                    </TapController>
                   </View>
                   <Animated.View
                     style={[
@@ -1005,47 +1026,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
                   </Animated.View>
                 </Animated.View>
               </Animated.View>
-              {/* <Ripple
-                ref={rippleLeft}
-                onAnimationEnd={() => {
-                  doubleLeftOpacity.value = 0;
-                }}
-                style={[controlStyle.doubleTap, controlStyle.leftDoubleTap]}
-                containerStyle={[{ width: leftDoubleTapBoundary }]}>
-                <Animated.View style={getDoubleLeftStyle}>
-                  <LottieView
-                    source={require('./assets/lottie-seek-back.json')}
-                    autoPlay
-                    loop
-                    style={controlStyle.backStep}
-                  />
-                  <Text tx="10s" isCenter color={palette.W(1)} t5 />
-                </Animated.View>
-              </Ripple>
-
-              <Ripple
-                ref={rippleRight}
-                onAnimationEnd={() => {
-                  doubleRightOpacity.value = 0;
-                }}
-                style={[
-                  controlStyle.doubleTap,
-                  controlStyle.rightDoubleTapContainer,
-                ]}
-                containerStyle={[{ width: leftDoubleTapBoundary }]}>
-                <Animated.View style={getDoubleRightStyle}>
-                  <LottieView
-                    source={require('./assets/lottie-seek-back.json')}
-                    autoPlay
-                    loop
-                    style={[
-                      controlStyle.backStep,
-                      { transform: [{ rotate: '90deg' }] },
-                    ]}
-                  />
-                  <Text tx="10s" isCenter color={palette.W(1)} t5 />
-                </Animated.View>
-              </Ripple> */}
               <Animated.View style={[styles.slider, bottomSliderStyle]}>
                 {duration > 0 && (
                   <Slider

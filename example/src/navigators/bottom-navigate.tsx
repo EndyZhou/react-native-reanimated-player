@@ -7,8 +7,8 @@ import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import type { TextStyle, ViewStyle } from 'react-native';
 import { TouchableOpacity, View } from 'react-native';
-import { clamp } from 'react-native-awesome-slider/src/utils';
 import Animated, {
+  clamp,
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
@@ -19,6 +19,7 @@ import { Text } from '../components';
 import { Icon } from '../components/icon';
 import { VIDEO_MIN_HEIGHT } from '../constants';
 import { Example } from '../screens';
+import { SharedValue } from 'react-native-reanimated';
 
 export type RootParamList = {
   Example: undefined;
@@ -59,7 +60,7 @@ const BOTTOM_TAB_HEIGHT = 48.5;
 const BottomTabNavigator = ({
   videoTranslateY,
 }: {
-  videoTranslateY: Animated.SharedValue<number>;
+  videoTranslateY: SharedValue<number>;
 }) => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
