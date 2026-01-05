@@ -41,7 +41,8 @@ import Video, {
   OnLoadData,
   OnProgressData,
   OnSeekData,
-  VideoProperties,
+  ReactVideoProps,
+  VideoRef,
 } from 'react-native-video';
 import { Text } from './components';
 // import { Ripple } from './components/ripple';
@@ -62,7 +63,7 @@ const controlAnimateConfig = {
 
 const AnimatedLottieView = Animated.createAnimatedComponent(LottieView);
 
-export type VideoProps = VideoProperties & {
+export type VideoProps = ReactVideoProps & {
   showOnStart?: boolean;
   onEnterFullscreen?: () => void;
   onExitFullscreen?: () => void;
@@ -221,7 +222,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
      * refs
      */
 
-    const videoPlayer = useRef<Video>(null);
+    const videoPlayer = useRef<VideoRef>(null);
     const mounted = useRef(false);
     const autoPlayAnimation = useSharedValue(autoPlay ? 1 : 0);
     // const { rippleLeft, rippleRight } = useRefs();
@@ -855,6 +856,20 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoProps>(
           <Animated.View
             pointerEvents="box-none"
             style={[styles.container, videoStyle, style]}>
+            <Video
+              {...rest}
+              ref={videoPlayer}
+              resizeMode={resizeMode}
+              paused={paused}
+              onLoadStart={onLoadStart}
+              style={styles.video}
+              source={source}
+              onLoad={onLoad}
+              onSeek={onSeek}
+              onEnd={onEnd}
+              onProgress={onProgress}
+              fullscreenAutorotate
+            />
             {renderVideoComponent?.()}
             {Boolean(children) && children}
             <VideoLoader loading={loading} />

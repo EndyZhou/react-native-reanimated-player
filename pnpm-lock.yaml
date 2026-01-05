@@ -15,8 +15,8 @@ importers:
         specifier: '*'
         version: 19.2.3
       react-native-video:
-        specifier: 5.2.1
-        version: 5.2.1
+        specifier: '>=6.0.0'
+        version: 6.18.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
     devDependencies:
       '@babel/core':
         specifier: ^7.21.4
@@ -45,9 +45,6 @@ importers:
       '@types/react-native':
         specifier: ^0.72.2
         version: 0.72.8(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))
-      '@types/react-native-video':
-        specifier: 5.0.15
-        version: 5.0.15(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))
       '@types/react-test-renderer':
         specifier: ^18.0.0
         version: 18.3.1
@@ -80,13 +77,13 @@ importers:
         version: 0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3)
       react-native-awesome-slider:
         specifier: 2.9.0
-        version: 2.9.0(react-native-gesture-handler@2.29.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native-reanimated@4.1.6(@babel/core@7.28.5)(react-native-worklets@0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
+        version: 2.9.0(react-native-gesture-handler@2.30.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native-reanimated@4.1.6(@babel/core@7.28.5)(react-native-worklets@0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
       react-native-builder-bob:
         specifier: ^0.40.17
         version: 0.40.17
       react-native-gesture-handler:
-        specifier: ^2.9.0
-        version: 2.29.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
+        specifier: ~2.30.0
+        version: 2.30.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
       react-native-reanimated:
         specifier: ~4.1.1
         version: 4.1.6(@babel/core@7.28.5)(react-native-worklets@0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
@@ -1435,9 +1432,6 @@ packages:
       '@types/react':
         optional: true
 
-  '@react-native/normalize-color@2.1.0':
-    resolution: {integrity: sha512-Z1jQI2NpdFJCVgpY+8Dq/Bt3d+YUi1928Q+/CZm/oh66fzM0RUl54vvuXlPJKybH4pdCZey1eDTPaLHkMPNgWA==}
-
   '@react-native/normalize-colors@0.80.0':
     resolution: {integrity: sha512-bJZDSopadjJxMDvysc634eTfLL4w7cAx5diPe14Ez5l+xcKjvpfofS/1Ja14DlgdMJhxGd03MTXlrxoWust3zg==}
 
@@ -1567,9 +1561,6 @@ packages:
     resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
     peerDependencies:
       '@types/react': ^18.0.0
-
-  '@types/react-native-video@5.0.15':
-    resolution: {integrity: sha512-li3yBYQ+D5GqZl0Y+M/vCTPfZwVyUU67CtSjEg+/ERkgEpvHDH+gQaoc9O00ttXr8kvqEzpiC6Ca9juIfeIlMA==}
 
   '@types/react-native@0.72.8':
     resolution: {integrity: sha512-St6xA7+EoHN5mEYfdWnfYt0e8u6k2FR0P9s2arYgakQGFgU1f9FlPrIEcj0X24pLCF5c5i3WVuLCUdiCYHmOoA==}
@@ -2487,9 +2478,6 @@ packages:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
 
-  deprecated-react-native-prop-types@2.3.0:
-    resolution: {integrity: sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA==}
-
   deprecation@2.3.1:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
 
@@ -2553,9 +2541,6 @@ packages:
 
   electron-to-chromium@1.5.267:
     resolution: {integrity: sha512-0Drusm6MVRXSOJpGbaSVgcQsuB4hEkMpHXaVstcPmhu5LIedxs1xNK/nIxmQIU/RPC0+1/o0AVZfBTkTNJOdUw==}
-
-  eme-encryption-scheme-polyfill@2.2.3:
-    resolution: {integrity: sha512-N0nlJZVaBqGWzvvFb6ZAxvTVeZ4v9cXCzrSFE0zCbNbviiygWI0gDJiRc4o5SqFrPVYBSQr5z5SzKjIvvxL+Vw==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -3871,9 +3856,6 @@ packages:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
     engines: {node: '>=4.0'}
 
-  keymirror@0.1.1:
-    resolution: {integrity: sha512-vIkZAFWoDijgQT/Nvl2AHCMmnegN2ehgTPYuyy2hWQkQSntI0S7ESYqdLkoSe1HyEBFHHkCgSIvVdSEiWwKvCg==}
-
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -4934,8 +4916,8 @@ packages:
     engines: {node: ^20.19.0 || ^22.12.0 || >= 23.4.0}
     hasBin: true
 
-  react-native-gesture-handler@2.29.1:
-    resolution: {integrity: sha512-du3qmv0e3Sm7qsd9SfmHps+AggLiylcBBQ8ztz7WUtd8ZjKs5V3kekAbi9R2W9bRLSg47Ntp4GGMYZOhikQdZA==}
+  react-native-gesture-handler@2.30.0:
+    resolution: {integrity: sha512-5YsnKHGa0X9C8lb5oCnKm0fLUPM6CRduvUUw2Bav4RIj/C3HcFh4RIUnF8wgG6JQWCL1//gRx4v+LVWgcIQdGA==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -4963,8 +4945,11 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-video@5.2.1:
-    resolution: {integrity: sha512-aJlr9MeTuQ0LpZ4n+EC9RvhoKeiPbLtI2Rxy8u7zo/wzGevbRpWHSBj9xZ5YDBXnAVXzuqyNIkGhdw7bfdIBZw==}
+  react-native-video@6.18.0:
+    resolution: {integrity: sha512-9BjAtAh1uGq6h/GNCCh5yzb/iI9qJHuflwNGExyhoUxbhPD1s+15h+CdpJ2MKKJTXw6J7w+nQOp1Ywa54R8w7Q==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
 
   react-native-windows@0.80.5:
     resolution: {integrity: sha512-7qbTuhwHcAR7Awj5Y4Ou94aQhMhg++kM9PMhK+S2u9bWZvWBqWINcDsSTYWdPn7NIe2XLLpMS8IutBWjoGwfGA==}
@@ -5276,10 +5261,6 @@ packages:
 
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
-
-  shaka-player@2.5.23:
-    resolution: {integrity: sha512-3MC9k0OXJGw8AZ4n/ZNCZS2yDxx+3as5KgH6Tx4Q5TRboTBBCu6dYPI5vp1DxKeyU12MBN1Zcbs7AKzXv2EnCg==}
-    deprecated: Shaka Player < v4.2 is no longer supported.
 
   shebang-command@1.2.0:
     resolution: {integrity: sha512-EV3L1+UQWGor21OmnvojK36mhg+TyIKDh3iFBKBohr5xeXIhNBcx8oWdgkTEEQ+BEFFYdLRuqMfd5L84N1V5Vg==}
@@ -8184,8 +8165,6 @@ snapshots:
       '@types/react': 18.3.27
     optional: true
 
-  '@react-native/normalize-color@2.1.0': {}
-
   '@react-native/normalize-colors@0.80.0':
     optional: true
 
@@ -8326,13 +8305,6 @@ snapshots:
   '@types/react-dom@18.3.7(@types/react@18.3.27)':
     dependencies:
       '@types/react': 18.3.27
-
-  '@types/react-native-video@5.0.15(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))':
-    dependencies:
-      '@types/react': 18.3.27
-      '@types/react-native': 0.72.8(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))
-    transitivePeerDependencies:
-      - react-native
 
   '@types/react-native@0.72.8(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))':
     dependencies:
@@ -9462,12 +9434,6 @@ snapshots:
 
   depd@2.0.0: {}
 
-  deprecated-react-native-prop-types@2.3.0:
-    dependencies:
-      '@react-native/normalize-color': 2.1.0
-      invariant: 2.2.4
-      prop-types: 15.8.1
-
   deprecation@2.3.1: {}
 
   destroy@1.2.0: {}
@@ -9520,8 +9486,6 @@ snapshots:
   ee-first@1.1.1: {}
 
   electron-to-chromium@1.5.267: {}
-
-  eme-encryption-scheme-polyfill@2.2.3: {}
 
   emittery@0.13.1: {}
 
@@ -11219,8 +11183,6 @@ snapshots:
       object.assign: 4.1.7
       object.values: 1.2.1
 
-  keymirror@0.1.1: {}
-
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -12520,11 +12482,11 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-native-awesome-slider@2.9.0(react-native-gesture-handler@2.29.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native-reanimated@4.1.6(@babel/core@7.28.5)(react-native-worklets@0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3):
+  react-native-awesome-slider@2.9.0(react-native-gesture-handler@2.30.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native-reanimated@4.1.6(@babel/core@7.28.5)(react-native-worklets@0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3):
     dependencies:
       react: 19.2.3
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3)
-      react-native-gesture-handler: 2.29.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
+      react-native-gesture-handler: 2.30.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
       react-native-reanimated: 4.1.6(@babel/core@7.28.5)(react-native-worklets@0.5.1(@babel/core@7.28.5)(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3))(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)
 
   react-native-builder-bob@0.40.17:
@@ -12554,7 +12516,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-native-gesture-handler@2.29.1(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3):
+  react-native-gesture-handler@2.30.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3):
     dependencies:
       '@egjs/hammerjs': 2.0.17
       hoist-non-react-statics: 3.3.2
@@ -12586,12 +12548,10 @@ snapshots:
       react: 19.2.3
       react-native: 0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3)
 
-  react-native-video@5.2.1:
+  react-native-video@6.18.0(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3):
     dependencies:
-      deprecated-react-native-prop-types: 2.3.0
-      keymirror: 0.1.1
-      prop-types: 15.8.1
-      shaka-player: 2.5.23
+      react: 19.2.3
+      react-native: 0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3)
 
   react-native-windows@0.80.5(@babel/core@7.28.5)(@types/react@18.3.27)(react-native@0.81.5(@babel/core@7.28.5)(@react-native-community/cli@17.0.0(typescript@5.9.3))(@types/react@18.3.27)(react@19.2.3))(react@19.2.3)(tslib@2.8.1)(typescript@5.9.3):
     dependencies:
@@ -13073,10 +13033,6 @@ snapshots:
       es-object-atoms: 1.1.1
 
   setprototypeof@1.2.0: {}
-
-  shaka-player@2.5.23:
-    dependencies:
-      eme-encryption-scheme-polyfill: 2.2.3
 
   shebang-command@1.2.0:
     dependencies:
